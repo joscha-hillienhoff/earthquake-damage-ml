@@ -1,7 +1,0 @@
-from sklearn.preprocessing import LabelEncoder
-
-label_encoder = LabelEncoder()
-
-# Label-Encoding für 'land_surface_condition'
-X_train['land_surface_condition'] = label_encoder.fit_transform(X_train['land_surface_condition'])
-X_test['land_surface_condition'] = label_encoder.transform(X_test['land_surface_condition'])
