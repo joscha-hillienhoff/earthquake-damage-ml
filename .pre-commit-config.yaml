@@ -1,0 +1,38 @@
+# .pre-commit-config.yaml
+repos:
+  # 1. Black — auto-format Python code
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        language_version: python3
+
+  # 2. isort — sort and group imports
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (python)
+
+  # 3. Flake8 — lint for PEP 8 & common issues
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-docstrings
+          - flake8-bugbear
+
+  # 4. Mypy — static type checker
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.1
+    hooks:
+      - id: mypy
+        additional_dependencies: []
+        args: ["--ignore-missing-imports"]
+
+  # 5. nbstripout — remove notebook outputs before commit
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.6.1
+    hooks:
+      - id: nbstripout
