@@ -1,14 +1,19 @@
 # src/dataset.py
 from __future__ import annotations
+
 from pathlib import Path
 from typing import Tuple
+
+from loguru import logger
 import numpy as np
 import pandas as pd
-from loguru import logger
 from tqdm import tqdm
 import typer
 
-from config import RAW_DATA_DIR, INTERIM_DATA_DIR  # note: no package prefix with this layout
+from config import (  # note: no package prefix with this layout
+    INTERIM_DATA_DIR,
+    RAW_DATA_DIR,
+)
 
 app = typer.Typer(help="Load raw data and create interim artifacts.")
 
