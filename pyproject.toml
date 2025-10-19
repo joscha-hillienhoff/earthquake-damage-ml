@@ -1,56 +1,47 @@
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core>=1.8.0,<2.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[project]
+[tool.poetry]
 name = "earthquake_damage_ml"
 version = "0.0.1"
 description = "Predicting building damage levels after the 2015 Gorkha Earthquake using ML"
-authors = [
-  { name = "Joscha Hillienhoff" },
-]
-license = { file = "LICENSE" }
+authors = ["Joscha Hillienhoff"]
+license = "MIT"
 readme = "README.md"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License"
-]
-dependencies = [
-    "awscli",
-    "black",
-    "flake8",
-    "isort",
-    "loguru",
-    "mkdocs",
-    "pip",
-    "pytest",
-    "python-dotenv",
-    "tqdm",
-    "typer",
-]
-requires-python = ">=3.10.0"
+# if you later package code under src/earthquake_damage_ml:
+packages = [{ include = "earthquake_damage_ml", from = "src" }]
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+numpy = "^1.26"
+pandas = "^2.2"
+matplotlib = ">=3.7,<3.10"
+seaborn = "^0.13"
+typer = "^0.12"
+loguru = "^0.7"
+tqdm = "^4.66"
+python-dotenv = "^1.0"
+pyarrow = "^16.0"
+ipykernel = "^6.29"  # for Jupyter kernel
+
+# tools you only use in dev
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.3"
+black = "^24.10"
+isort = "^5.13"
+flake8 = "^7.1"
+mypy = "^1.10"
+nbstripout = "^0.8"
+mkdocs = "^1.6"
+awscli = "^1.33"
+pytest = "^8.3"
 
 [tool.black]
 line-length = 99
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.venv
-)/
-'''
 
 [tool.isort]
 profile = "black"
 known_first_party = ["earthquake_damage_ml"]
 force_sort_within_sections = true
-
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^4.3.0"
-black = "^25.9.0"
-isort = "^7.0.0"
-flake8 = "^7.3.0"
-mypy = "^1.18.2"
-nbstripout = "^0.8.1"
-
