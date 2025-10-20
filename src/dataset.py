@@ -1,27 +1,32 @@
-# src/dataset.py
+"""Utility module for loading and preparing both competition and original datasets.
+
+Provides functions to:
+- Load raw competition (train, labels, test) and original data.
+- Merge train with labels and structure with ownership.
+- Generate interim artifacts for downstream analysis.
+- Run as a CLI to create interim parquet files.
+
+Usage:
+    poetry run python src/dataset.py make-interim-comp
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Tuple
 
 from loguru import logger
-import numpy as np
 import pandas as pd
-from tqdm import tqdm
 import typer
 
-from config import (  # note: no package prefix with this layout
-    INTERIM_DATA_DIR,
-    RAW_DATA_DIR,
-)
+from config import INTERIM_DATA_DIR, RAW_DATA_DIR
 
 app = typer.Typer(help="Load raw data and create interim artifacts.")
 
 
 # --------- reusable loaders ---------
 def load_competition_raw(raw_dir: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """
-    Load competition data (train, labels, and test) from the given raw data directory.
+    """Load competition data (train, labels, and test) from the given raw data directory.
 
     Args:
         raw_dir (Path): Path to the raw data directory (e.g., data/raw).
@@ -40,9 +45,7 @@ def load_competition_raw(raw_dir: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.
 
 
 def load_original_raw(raw_dir: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """
-    Load the original auxiliary data tables (damage assessment, structure, ownership)
-    from the given raw data directory.
+    """Load the original auxiliary data tables (damage assessment, structure, ownership) from the given raw data directory.
 
     Args:
         raw_dir (Path): Path to the raw data directory (e.g., data/raw).
@@ -60,10 +63,8 @@ def load_original_raw(raw_dir: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Dat
     return damage, structure, owneruse
 
 
-def build_interim_tables(train: pd.DataFrame, labels: pd.DataFrame, test: pd.DataFrame):
-    """
-    Build interim datasets by merging training features with labels
-    and keeping the test set unchanged.
+def build_competition_tables(train: pd.DataFrame, labels: pd.DataFrame, test: pd.DataFrame):
+    """Build interim datasets for the competition dataset by merging training features with labels and keeping the test set unchanged.
 
     Args:
         train (pd.DataFrame): Raw training feature set.
@@ -79,16 +80,30 @@ def build_interim_tables(train: pd.DataFrame, labels: pd.DataFrame, test: pd.Dat
     return df, test
 
 
+def build_original_table(structure: pd.DataFrame, owner: pd.DataFrame) -> pd.DataFrame:
+    """Merge structure and ownership tables from the original dataset.
+
+    Args:
+        structure (pd.DataFrame): Building structure data.
+        owner (pd.DataFrame): Building ownership and use data.
+
+    Returns:
+        pd.DataFrame: Merged original dataset.
+    """
+    df = structure.merge(owner, on="building_id", how="left")
+
+    return df
+
+
 # --------- CLI command ---------
 @app.command()
-def make_interim(
+def make_interim_comp(
     raw_dir: Path = RAW_DATA_DIR,
     out_dir: Path = INTERIM_DATA_DIR,
     train_out: str = "train_interim.parquet",
     test_out: str = "test_interim.parquet",
 ):
-    """
-    CLI command to create interim data artifacts.
+    """CLI command to create interim data artifacts for the competition dataset.
 
     Loads raw train/test data, merges labels with train,
     and writes the resulting interim train and test sets to disk as Parquet files.
@@ -103,7 +118,7 @@ def make_interim(
     train, labels, test = load_competition_raw(raw_dir)
 
     logger.info("Building interim artifacts")
-    df_i, test_i = build_interim_tables(train, labels, test)
+    df_i, test_i = build_competition_tables(train, labels, test)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / train_out).write_bytes(df_i.to_parquet(index=False))
