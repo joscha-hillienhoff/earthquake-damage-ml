@@ -19,7 +19,7 @@ from loguru import logger
 import pandas as pd
 import typer
 
-from config import INTERIM_DATA_DIR, RAW_DATA_DIR
+from src.config import INTERIM_DATA_DIR, RAW_DATA_DIR
 
 app = typer.Typer(help="Load raw data and create interim artifacts.")
 
