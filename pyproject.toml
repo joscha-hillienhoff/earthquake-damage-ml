@@ -10,7 +10,8 @@ authors = ["Joscha Hillienhoff"]
 license = "MIT"
 readme = "README.md"
 # if you later package code under src/earthquake_damage_ml:
-packages = [{ include = "earthquake_damage_ml", from = "src" }]
+packages = [
+    { include = "src" }]
 
 
 [tool.poetry.dependencies]
@@ -28,6 +29,12 @@ ipykernel = "^6.29"  # for Jupyter kernel
 
 # tools you only use in dev
 scikit-learn = "^1.7.2"
+imbalanced-learn = "^0.14.0"
+mlflow = "^2.2.2"
+dagshub = "^0.6.3"
+scikit-optimize = "^0.10.2"
+joblib = "^1.5.2"
+xgboost = "^3.1.0"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.3"
 black = "^24.10"
